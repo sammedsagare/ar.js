@@ -39,7 +39,14 @@
       >
       </a-entity>
 
-      <a-entity camera></a-entity>
+      <a-entity
+        camera
+        position="0 0 0"
+        look-controls="pointerLockEnabled: true"
+        user-height="true"
+        camera="fov: 80; near: 0.1; far: 10"
+      >
+      </a-entity>
     </a-scene>
 
     <button class="register-btn" onclick="registerUser()">Register</button>
