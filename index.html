@@ -34,14 +34,14 @@
   </head>
   <body>
     <a-scene embedded arjs>
-      <a-entity
-        gltf-model="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"
-        position="0 0 -1"
-        scale="0.1 0.1 0.1"
-        rotation="0 180 0"
-        id="model"
-      >
-      </a-entity>
+      <a-anchor>
+        <a-entity
+          gltf-model="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"
+          scale="0.1 0.1 0.1"
+          position="0 0 0"
+          rotation="0 180 0"
+        ></a-entity>
+      </a-anchor>
 
       <a-entity
         camera
