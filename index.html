@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AR 3D Model Display</title>
+
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .register-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 25px;
+        font-size: 18px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene embedded arjs>
+      <a-entity
+        gltf-model="./logo.glb"
+        position="0 0 -2"
+        scale="1 1 1"
+        rotation="0 180 0"
+      ></a-entity>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <button class="register-btn" onclick="registerUser()">Register</button>
+
+    <script>
+      function registerUser() {
+        alert("Redirecting to the registration page...");
+        window.location.href = "https://www.google.com/";
+      }
+    </script>
+  </body>
+</html>
