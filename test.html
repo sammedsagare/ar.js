@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>AR Fixed Position 3D Model</title>
+
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .register-btn {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 25px;
+        font-size: 18px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
+    >
+      <!-- Fixed Position 3D Model -->
+      <a-entity
+        gltf-model="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"
+        position="0 0 -2"
+        scale="0.1 0.1 0.1"
+        rotation="0 180 0"
+        id="model"
+        visible="false"
+      ></a-entity>
+
+      <a-entity
+        camera
+        position="0 0 0"
+        user-height="true"
+        camera="fov: 100; near: 0.1; far: 10"
+      >
+      </a-entity>
+    </a-scene>
+
+    <button class="register-btn" onclick="registerUser()">Register</button>
+
+    <script>
+      // When model is loaded and tracked in the real world
+      document.querySelector("#model").addEventListener("model-loaded", () => {
+        console.log("3D model loaded successfully!");
+        // Make model visible when it is correctly placed in the world
+        document.querySelector("#model").setAttribute("visible", "true");
+      });
+
+      // Simulating the "model appears when the camera reaches the right position" effect
+      document.querySelector("a-scene").addEventListener("enter-vr", () => {
+        console.log("Entering VR mode");
+        // Optionally hide/show something based on whether AR mode is active
+      });
+
+      // Register user
+      function registerUser() {
+        alert("Redirecting to the registration page...");
+        window.location.href = "https://www.google.com/";
+      }
+    </script>
+  </body>
+</html>

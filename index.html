@@ -6,12 +6,9 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
-
     <title>AR Fixed Position 3D Model</title>
-
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-
     <style>
       body {
         margin: 0;
@@ -29,6 +26,7 @@
         border: none;
         cursor: pointer;
         border-radius: 5px;
+        z-index: 9999; /* Ensure the button is above the AR scene */
       }
     </style>
   </head>
@@ -37,39 +35,108 @@
       embedded
       arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;"
     >
+      <!-- Camera Feed -->
+      <a-entity id="camera" camera></a-entity>
+
       <!-- Fixed Position 3D Model -->
       <a-entity
+        id="model"
         gltf-model="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"
-        position="0 0 -2"
         scale="0.1 0.1 0.1"
         rotation="0 180 0"
-        id="model"
         visible="false"
       ></a-entity>
-
-      <a-entity
-        camera
-        position="0 0 0"
-        user-height="true"
-        camera="fov: 100; near: 0.1; far: 10"
-      >
-      </a-entity>
     </a-scene>
 
+    <!-- Registration Button -->
     <button class="register-btn" onclick="registerUser()">Register</button>
 
     <script>
-      // When model is loaded and tracked in the real world
-      document.querySelector("#model").addEventListener("model-loaded", () => {
-        console.log("3D model loaded successfully!");
-        // Make model visible when it is correctly placed in the world
-        document.querySelector("#model").setAttribute("visible", "true");
+      // Variables to store the initial camera position and orientation
+      let initialCameraPosition = null;
+      let initialCameraRotation = null;
+      let modelPlaced = false;
+
+      // Function to place the model at the initial camera position
+      function placeModel() {
+        const camera = document.querySelector("#camera");
+        const model = document.querySelector("#model");
+
+        // Get the initial camera position and rotation
+        initialCameraPosition = camera.getAttribute("position");
+        initialCameraRotation = camera.getAttribute("rotation");
+
+        // Place the model in front of the camera
+        model.setAttribute("position", {
+          x: initialCameraPosition.x,
+          y: initialCameraPosition.y,
+          z: initialCameraPosition.z - 1, // Adjust the Z position to place the model in front of the camera
+        });
+
+        // Make the model visible
+        model.setAttribute("visible", "true");
+        modelPlaced = true;
+
+        console.log("Model placed at initial position:", initialCameraPosition);
+      }
+
+      // Function to check if the camera is close to the initial position
+      function isCameraNearInitialPosition(cameraPosition, cameraRotation) {
+        const positionThreshold = 0.5; // Threshold for position difference
+        const rotationThreshold = 10; // Threshold for rotation difference (in degrees)
+
+        // Calculate the difference between the current and initial positions
+        const positionDifference = {
+          x: Math.abs(cameraPosition.x - initialCameraPosition.x),
+          y: Math.abs(cameraPosition.y - initialCameraPosition.y),
+          z: Math.abs(cameraPosition.z - initialCameraPosition.z),
+        };
+
+        // Calculate the difference between the current and initial rotations
+        const rotationDifference = {
+          x: Math.abs(cameraRotation.x - initialCameraRotation.x),
+          y: Math.abs(cameraRotation.y - initialCameraRotation.y),
+          z: Math.abs(cameraRotation.z - initialCameraRotation.z),
+        };
+
+        // Check if the differences are within the thresholds
+        return (
+          positionDifference.x < positionThreshold &&
+          positionDifference.y < positionThreshold &&
+          positionDifference.z < positionThreshold &&
+          rotationDifference.x < rotationThreshold &&
+          rotationDifference.y < rotationThreshold &&
+          rotationDifference.z < rotationThreshold
+        );
+      }
+
+      // Function to update the model's visibility based on camera position
+      function updateModelVisibility() {
+        const camera = document.querySelector("#camera");
+        const model = document.querySelector("#model");
+
+        if (!modelPlaced) return;
+
+        // Get the current camera position and rotation
+        const cameraPosition = camera.getAttribute("position");
+        const cameraRotation = camera.getAttribute("rotation");
+
+        // Check if the camera is near the initial position
+        if (isCameraNearInitialPosition(cameraPosition, cameraRotation)) {
+          model.setAttribute("visible", "true");
+        } else {
+          model.setAttribute("visible", "false");
+        }
+      }
+
+      // Place the model when the scene is loaded
+      document.querySelector("a-scene").addEventListener("loaded", () => {
+        placeModel();
       });
 
-      // Simulating the "model appears when the camera reaches the right position" effect
-      document.querySelector("a-scene").addEventListener("enter-vr", () => {
-        console.log("Entering VR mode");
-        // Optionally hide/show something based on whether AR mode is active
+      // Update the model's visibility on every frame
+      document.querySelector("a-scene").addEventListener("renderstart", () => {
+        setInterval(updateModelVisibility, 100); // Check every 100ms
       });
 
       // Register user
