@@ -32,14 +32,21 @@
     <a-scene embedded arjs>
       <a-entity
         gltf-model="https://cdn.jsdelivr.net/gh/KhronosGroup/glTF-Sample-Models/2.0/Duck/glTF-Binary/Duck.glb"
-        position="0 0 -2"
-        scale="1 1 1"
+        position="0 0 -1"
+        scale="0.1 0.1 0.1"
         rotation="0 180 0"
         visible="false"
         id="model"
       ></a-entity>
 
-      <a-entity camera></a-entity>
+      <a-entity
+        camera
+        position="0 0 0"
+        look-controls="pointerLockEnabled: true"
+        user-height="true"
+        camera="fov: 100; near: 0.1; far: 10"
+      >
+      </a-entity>
     </a-scene>
 
     <button class="register-btn" onclick="registerUser()">Register</button>
